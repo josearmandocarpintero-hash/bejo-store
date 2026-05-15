@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>BeJo Store</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@200;300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--cream:#F6F1EA;--dark:#191917;--mid:#2E2E2B;--warm:#8C877E;--gold:#C4A052;--light:#FDFAF5;--rose:#C8938E;--border:rgba(28,28,26,.09)}
+html{scroll-behavior:smooth}
+body{font-family:'Jost',sans-serif;background:var(--light);color:var(--dark);cursor:none;overflow-x:hidden}
+
+/* CURSOR */
+.cur{position:fixed;width:10px;height:10px;background:var(--dark);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:background .2s}
+.cur2{position:fixed;width:38px;height:38px;border:1.5px solid var(--dark);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:width .3s,height .3s,border-color .3s}
+body:has(a:hover) .cur2,body:has(button:hover) .cur2{width:58px;height:58px;border-color:var(--gold)}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:300;display:flex;align-items:center;justify-content:space-between;padding:22px 56px;background:rgba(253,250,245,.94);backdrop-filter:blur(14px);border-bottom:1px solid var(--border);animation:navIn .8s ease both}
+@keyframes navIn{from{opacity:0;transform:translateY(-18px)}to{opacity:1;transform:none}}
+.logo{font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:300;letter-spacing:.3em;text-transform:uppercase;color:var(--dark);text-decoration:none}
+.logo em{font-style:normal;color:var(--gold)}
+.nav-links{display:flex;gap:36px;list-style:none}
+.nav-links a{font-size:11px;font-weight:400;letter-spacing:.18em;text-transform:uppercase;color:var(--dark);text-decoration:none;position:relative}
+.nav-links a::after{content:'';position:absolute;bottom:-3px;left:0;width:0;height:1px;background:var(--gold);transition:width .3s}
+.nav-links a:hover::after{width:100%}
+.nav-icons{display:flex;gap:6px}
+.ni{background:none;border:none;font-size:17px;cursor:none;color:var(--dark);width:38px;height:38px;display:flex;align-items:center;justify-content:center;border-radius:6px;transition:background .2s;position:relative}
+.ni:hover{background:rgba(196,160,82,.1)}
+.cart-dot{position:absolute;top:5px;right:5px;width:16px;height:16px;background:var(--gold);border-radius:50%;font-size:9px;color:white;display:flex;align-items:center;justify-content:center;font-family:'Jost',sans-serif;font-weight:600}
+
+/* HERO */
+.hero{min-height:100vh;padding-top:78px;display:grid;grid-template-columns:1fr 1fr}
+.hero-left{display:flex;flex-direction:column;justify-content:center;padding:80px 52px 80px 72px;animation:fromLeft 1s .15s ease both}
+.hero-right{position:relative;overflow:hidden;animation:fromRight 1s .25s ease both}
+@keyframes fromLeft{from{opacity:0;transform:translateX(-28px)}to{opacity:1;transform:none}}
+@keyframes fromRight{from{opacity:0;transform:translateX(28px)}to{opacity:1;transform:none}}
+.eyebrow{display:flex;align-items:center;gap:14px;font-size:10px;letter-spacing:.32em;text-transform:uppercase;color:var(--gold);margin-bottom:28px}
+.eyebrow::before{content:'';width:32px;height:1px;background:var(--gold)}
+h1{font-family:'Cormorant Garamond',serif;font-size:clamp(56px,6.5vw,94px);font-weight:300;line-height:1.02;letter-spacing:-.01em;color:var(--dark);margin-bottom:30px}
+h1 em{font-style:italic;color:var(--warm)}
+.hero-p{font-size:15px;font-weight:300;line-height:1.85;color:var(--warm);max-width:380px;margin-bottom:48px}
+.btns{display:flex;gap:14px;flex-wrap:wrap}
+.btn-fill{display:inline-flex;align-items:center;gap:12px;background:var(--dark);color:var(--cream);font-family:'Jost',sans-serif;font-size:11px;font-weight:500;letter-spacing:.2em;text-transform:uppercase;padding:17px 34px;text-decoration:none;border:none;cursor:none;transition:background .3s,gap .3s}
+.btn-fill:hover{background:var(--gold);gap:20px}
+.btn-line{display:inline-flex;align-items:center;gap:10px;background:transparent;color:var(--dark);font-family:'Jost',sans-serif;font-size:11px;font-weight:500;letter-spacing:.2em;text-transform:uppercase;padding:16px 30px;border:1px solid var(--dark);text-decoration:none;cursor:none;transition:background .3s,color .3s}
+.btn-line:hover{background:var(--dark);color:var(--cream)}
+.hero-stats{display:flex;gap:44px;margin-top:60px;padding-top:44px;border-top:1px solid var(--border)}
+.hstat-n{font-family:'Cormorant Garamond',serif;font-size:36px;font-weight:300;color:var(--dark);line-height:1}
+.hstat-n sup{font-size:18px;color:var(--gold)}
+.hstat-l{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--warm);margin-top:6px}
+.hero-bg{width:100%;height:100%;min-height:560px;background:linear-gradient(155deg,#E2D8CC 0%,#C8B8A4 45%,#A8957E 100%);display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+.hero-bg::before{content:'';position:absolute;width:360px;height:360px;border-radius:50%;background:rgba(255,255,255,.14);top:-100px;right:-100px}
+.hero-bg::after{content:'';position:absolute;width:220px;height:220px;border-radius:50%;background:rgba(0,0,0,.06);bottom:60px;left:-70px}
+.hero-icon{font-size:130px;filter:drop-shadow(0 24px 48px rgba(0,0,0,.18));animation:float 5s ease-in-out infinite;z-index:1}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-14px)}}
+.hero-chip{position:absolute;bottom:28px;left:28px;background:rgba(253,250,245,.92);backdrop-filter:blur(10px);padding:14px 20px}
+.hero-chip small{font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:var(--warm);display:block;margin-bottom:3px}
+.hero-chip strong{font-size:14px;font-weight:400;color:var(--dark)}
+
+/* TICKER */
+.ticker{overflow:hidden;background:var(--dark);padding:15px 0;border-top:1px solid rgba(255,255,255,.06)}
+.ticker-track{display:flex;animation:tick 22s linear infinite;white-space:nowrap}
+.tk{font-size:10px;letter-spacing:.28em;text-transform:uppercase;color:rgba(253,250,245,.55);padding:0 30px}
+.tk-dot{color:var(--gold);opacity:1!important;padding:0 6px}
+@keyframes tick{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+/* SECTIONS */
+.sec{padding:100px 72px}
+.sh{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:60px}
+.sh-left .label{font-size:10px;letter-spacing:.28em;text-transform:uppercase;color:var(--gold);display:flex;align-items:center;gap:12px;margin-bottom:14px}
+.sh-left .label::before{content:'';width:28px;height:1px;background:var(--gold)}
+h2{font-family:'Cormorant Garamond',serif;font-size:clamp(36px,4vw,56px);font-weight:300;line-height:1.08}
+h2 em{font-style:italic;color:var(--warm)}
+.sh-link{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--dark);text-decoration:none;display:flex;align-items:center;gap:8px;border-bottom:1px solid var(--dark);padding-bottom:2px;transition:color .2s,border-color .2s}
+.sh-link:hover{color:var(--gold);border-color:var(--gold)}
+
+/* CATEGORIES */
+.cats-sec{background:var(--cream)}
+.cats-grid{display:grid;grid-template-columns:1fr 1fr;grid-template-rows:420px;gap:14px}
+.ccat{position:relative;overflow:hidden;cursor:none}
+.ccat-bg{width:100%;height:100%;transition:transform .6s ease}
+.ccat:hover .ccat-bg{transform:scale(1.05)}
+.cb1{background:linear-gradient(155deg,#2C2218,#5C4632,#8C6E52)}
+.cb2{background:linear-gradient(155deg,#181E2C,#2E3E5C,#4A608C)}
+.cb3{background:linear-gradient(155deg,#201818,#502828,#805050)}
+.cb4{background:linear-gradient(155deg,#181C18,#304830,#508050)}
+.cb5{background:linear-gradient(155deg,#20181C,#4C2E48,#7C5278)}
+.ccat-icon{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:72px;opacity:.22;transition:opacity .3s,transform .3s}
+.ccat:hover .ccat-icon{opacity:.38;transform:translate(-50%,-56%)}
+.ccat-info{position:absolute;bottom:0;left:0;right:0;padding:22px 26px;background:linear-gradient(transparent,rgba(0,0,0,.62));color:white}
+.ccat-info small{font-size:9px;letter-spacing:.22em;text-transform:uppercase;opacity:.6;display:block;margin-bottom:4px}
+.ccat-info h3{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:300}
+
+/* PRODUCTS */
+.prod-sec{background:white}
+.pgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:30px}
+.pc{cursor:none}
+.pc-img{position:relative;aspect-ratio:3/4;overflow:hidden;margin-bottom:14px}
+.pc-bg{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:78px;transition:transform .55s ease}
+.pc:hover .pc-bg{transform:scale(1.06)}
+.pi1{background:linear-gradient(140deg,#EAE0D2,#C8B89A)}.pi2{background:linear-gradient(140deg,#D6DAE4,#B2BAC8)}
+.pi3{background:linear-gradient(140deg,#E4DDD0,#C2B8A4)}.pi4{background:linear-gradient(140deg,#DCE0DC,#B8C0B8)}
+.pi5{background:linear-gradient(140deg,#E8D8D8,#C8B0B0)}.pi6{background:linear-gradient(140deg,#D8D4E8,#B8B0D0)}
+.pi7{background:linear-gradient(140deg,#E0E4D8,#C0C8B4)}.pi8{background:linear-gradient(140deg,#E4DCD8,#C8BCB8)}
+.pc-actions{position:absolute;bottom:-72px;left:0;right:0;background:rgba(25,25,23,.95);padding:14px;display:flex;flex-direction:column;gap:8px;transition:bottom .3s ease}
+.pc:hover .pc-actions{bottom:0}
+.ptag{position:absolute;top:10px;left:10px;font-size:9px;font-weight:500;letter-spacing:.16em;text-transform:uppercase;padding:5px 10px}
+.t-new{background:var(--dark);color:var(--cream)}.t-sale{background:var(--rose);color:white}.t-dest{background:var(--gold);color:white}
+.pc-name{font-size:14px;font-weight:400;margin-bottom:5px}
+.pc-sub{font-size:11px;color:var(--warm);margin-bottom:8px}
+.pc-price{display:flex;align-items:center;gap:10px}
+.price-now{font-size:16px;font-weight:500}
+.price-was{font-size:13px;color:var(--warm);text-decoration:line-through}
+
+/* SIZE SELECTOR (inside card hover) */
+.size-selector-row{display:flex;gap:5px;flex-wrap:wrap}
+.sz-btn{padding:4px 9px;font-size:10px;font-family:'Jost',sans-serif;cursor:none;border:1px solid rgba(255,255,255,.25);background:transparent;color:rgba(255,255,255,.7);transition:all .2s;letter-spacing:.06em}
+.sz-btn:hover:not(.sz-out){border-color:var(--gold);color:var(--gold)}
+.sz-btn.sz-selected{background:var(--gold);border-color:var(--gold);color:white}
+.sz-btn.sz-out{border-color:rgba(200,147,142,.4);color:rgba(200,147,142,.55);cursor:not-allowed;text-decoration:line-through}
+.btn-ac{width:100%;background:var(--gold);color:white;border:none;font-family:'Jost',sans-serif;font-size:10px;font-weight:500;letter-spacing:.18em;text-transform:uppercase;padding:11px;cursor:none;transition:background .2s}
+.btn-ac:hover{background:#a8863e}
+.btn-ac:disabled{background:rgba(196,160,82,.3);cursor:not-allowed}
+
+/* SIZE BADGES (outside card, below title) */
+.pc-sizes{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:10px}
+.sz-tag{display:inline-block;padding:2px 7px;font-size:9px;border:1px solid;letter-spacing:.06em}
+.sz-tag.sz-tag-ok{border-color:rgba(107,175,122,.5);color:#6BAF7A}
+.sz-tag.sz-tag-out{border-color:rgba(200,147,142,.4);color:#C8938E}
+
+/* COUPON BAR */
+.coupon-bar{background:var(--cream);border:1px solid var(--border);padding:8px 12px;margin-bottom:10px;display:flex;gap:8px;align-items:center}
+.coupon-input{flex:1;padding:8px 12px;border:1px solid var(--border);background:white;font-family:'Jost',sans-serif;font-size:12px;color:var(--dark);outline:none}
+.coupon-input:focus{border-color:var(--gold)}
+.coupon-btn{padding:8px 14px;background:var(--dark);color:var(--cream);border:none;font-family:'Jost',sans-serif;font-size:10px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;cursor:none;transition:background .2s}
+.coupon-btn:hover{background:var(--gold)}
+.coupon-msg{font-size:11px;margin-top:4px;min-height:16px}
+.coupon-ok{color:#6BAF7A}.coupon-err{color:#C8938E}
+
+/* EDITORIAL */
+.editorial{display:grid;grid-template-columns:1fr 1fr;min-height:500px}
+.ed-visual{background:linear-gradient(145deg,#191917,#2E2820,#C4A05222);display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+.ed-visual::before{content:'';position:absolute;width:300px;height:300px;border-radius:50%;border:1px solid rgba(196,160,82,.18);top:-80px;right:-80px}
+.ed-visual::after{content:'';position:absolute;width:200px;height:200px;border-radius:50%;border:1px solid rgba(196,160,82,.1);bottom:-50px;left:-50px}
+.ed-icon{font-size:140px;z-index:1;animation:float 5s ease-in-out infinite}
+.ed-text{background:var(--cream);display:flex;flex-direction:column;justify-content:center;padding:80px 72px}
+.ed-label{font-size:10px;letter-spacing:.28em;text-transform:uppercase;color:var(--gold);margin-bottom:22px;display:flex;align-items:center;gap:12px}
+.ed-label::before{content:'';width:28px;height:1px;background:var(--gold)}
+.ed-title{font-family:'Cormorant Garamond',serif;font-size:clamp(38px,4vw,60px);font-weight:300;line-height:1.08;margin-bottom:22px}
+.ed-title em{font-style:italic;color:var(--warm)}
+.ed-p{font-size:14px;font-weight:300;line-height:1.85;color:var(--warm);max-width:380px;margin-bottom:40px}
+
+/* NEWSLETTER */
+.nl{padding:96px 72px;background:var(--cream)}
+.nl-inner{max-width:580px;margin:0 auto;text-align:center}
+.nl-label{font-size:10px;letter-spacing:.28em;text-transform:uppercase;color:var(--gold);margin-bottom:18px}
+.nl-title{font-family:'Cormorant Garamond',serif;font-size:clamp(34px,4vw,50px);font-weight:300;line-height:1.12;margin-bottom:14px}
+.nl-p{font-size:14px;font-weight:300;color:var(--warm);line-height:1.75;margin-bottom:36px}
+.nl-form{display:flex}
+.nl-input{flex:1;padding:16px 20px;border:1px solid rgba(28,28,26,.18);border-right:none;background:white;font-family:'Jost',sans-serif;font-size:13px;color:var(--dark);outline:none}
+.nl-input:focus{border-color:var(--gold)}
+.nl-input::placeholder{color:var(--warm)}
+.nl-btn{padding:16px 26px;background:var(--dark);color:var(--cream);border:none;font-family:'Jost',sans-serif;font-size:11px;font-weight:500;letter-spacing:.18em;text-transform:uppercase;cursor:none;transition:background .3s}
+.nl-btn:hover{background:var(--gold)}
+
+/* FOOTER */
+footer{background:var(--dark);padding:72px 72px 32px}
+.foot-top{display:grid;grid-template-columns:2.2fr 1fr 1fr 1fr;gap:48px;margin-bottom:56px}
+.foot-logo{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:300;letter-spacing:.28em;text-transform:uppercase;color:var(--cream);text-decoration:none;display:block;margin-bottom:18px}
+.foot-logo em{font-style:normal;color:var(--gold)}
+.foot-about{font-size:13px;font-weight:300;line-height:1.8;color:rgba(253,250,245,.42);max-width:250px;margin-bottom:24px}
+.foot-socials{display:flex;gap:10px}
+.fsoc{width:36px;height:36px;border:1px solid rgba(253,250,245,.16);background:none;display:flex;align-items:center;justify-content:center;font-size:14px;cursor:none;transition:border-color .2s,background .2s}
+.fsoc:hover{border-color:var(--gold);background:var(--gold)}
+.fcol-h{font-size:9px;letter-spacing:.25em;text-transform:uppercase;color:rgba(253,250,245,.32);margin-bottom:18px}
+.fcol ul{list-style:none}.fcol li{margin-bottom:10px}
+.fcol a{font-size:13px;font-weight:300;color:rgba(253,250,245,.58);text-decoration:none;transition:color .2s}
+.fcol a:hover{color:var(--gold)}
+.foot-bottom{border-top:1px solid rgba(253,250,245,.07);padding-top:26px;display:flex;align-items:center;justify-content:space-between}
+.foot-bottom p{font-size:11px;color:rgba(253,250,245,.28)}
+
+/* CART */
+.cart-veil{position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:400;opacity:0;pointer-events:none;transition:opacity .35s}
+.cart-veil.on{opacity:1;pointer-events:all}
+.cart-panel{position:fixed;top:0;right:-420px;bottom:0;width:400px;background:var(--light);z-index:500;display:flex;flex-direction:column;transition:right .4s ease;box-shadow:-6px 0 32px rgba(0,0,0,.12)}
+.cart-panel.on{right:0}
+.cart-top{display:flex;align-items:center;justify-content:space-between;padding:26px 30px;border-bottom:1px solid var(--border)}
+.cart-top h3{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:300}
+.cart-close{background:none;border:none;font-size:20px;cursor:none;color:var(--dark)}
+.cart-body{flex:1;overflow-y:auto;padding:22px 30px}
+.cart-empty{text-align:center;padding:72px 0;color:var(--warm);font-size:14px}
+.cart-empty .ei{font-size:48px;margin-bottom:14px}
+.ci{display:flex;gap:14px;padding:16px 0;border-bottom:1px solid var(--border);align-items:flex-start}
+.ci-img{width:70px;height:84px;display:flex;align-items:center;justify-content:center;font-size:34px;background:var(--cream);flex-shrink:0}
+.ci-info{flex:1}
+.ci-name{font-size:13px;font-weight:400;margin-bottom:2px}
+.ci-size{font-size:10px;letter-spacing:.1em;color:var(--gold);margin-bottom:4px}
+.ci-sub{font-size:11px;color:var(--warm);margin-bottom:8px}
+.ci-price{font-size:14px;font-weight:500}
+.ci-rm{background:none;border:none;color:var(--warm);cursor:none;font-size:16px}
+.ci-rm:hover{color:var(--rose)}
+.cart-foot{padding:22px 30px;border-top:1px solid var(--border)}
+.total-row{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px}
+.total-row span{font-size:12px;color:var(--warm)}
+.total-row strong{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:300}
+.discount-row{display:flex;justify-content:space-between;font-size:12px;color:#6BAF7A;margin-bottom:12px}
+.btn-checkout{width:100%;padding:17px;background:#25D366;color:white;border:none;font-family:'Jost',sans-serif;font-size:11px;font-weight:500;letter-spacing:.2em;text-transform:uppercase;cursor:none;transition:background .3s;display:flex;align-items:center;justify-content:center;gap:10px}
+.btn-checkout:hover{background:#1eb857}
+
+/* TOAST */
+.toast{position:fixed;bottom:28px;right:28px;background:var(--dark);color:var(--cream);padding:14px 22px;font-size:12px;letter-spacing:.08em;z-index:600;opacity:0;transform:translateY(16px);transition:all .3s;pointer-events:none}
+.toast.on{opacity:1;transform:none}
+
+/* SIZE REQUIRED tooltip */
+.size-hint{font-size:10px;color:var(--rose);margin-top:4px;display:none}
+
+@media(max-width:1050px){
+  nav{padding:18px 24px}.nav-links{display:none}
+  .hero{grid-template-columns:1fr}.hero-left{padding:96px 28px 56px}.hero-right{display:none}
+  .sec{padding:64px 28px}
+  .cats-grid{grid-template-columns:1fr 1fr;grid-template-rows:auto}
+  .pgrid{grid-template-columns:1fr 1fr}
+  .editorial{grid-template-columns:1fr}.ed-visual{min-height:340px}.ed-text{padding:56px 28px}
+  .nl{padding:64px 28px}
+  footer{padding:56px 28px 28px}.foot-top{grid-template-columns:1fr 1fr;gap:32px}
+}
+</style>
+</head>
+<body>
+<div class="cur" id="cur"></div>
+<div class="cur2" id="cur2"></div>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="logo">Be<em>J</em>o Store</a>
+  <ul class="nav-links">
+    <li><a href="#categorias">Categorias</a></li>
+    <li><a href="#produtos">Produtos</a></li>
+    <li><a href="#editorial">Editorial</a></li>
+    <li><a href="#sobre">Sobre</a></li>
+  </ul>
+  <div class="nav-icons">
+    <button class="ni">🔍</button>
+    <button class="ni">♡</button>
+    <button class="ni" onclick="openCart()" style="position:relative">🛍<span class="cart-dot" id="badge">0</span></button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-left">
+    <p class="eyebrow">Coleção Primavera 2026</p>
+    <h1>Vista-se<br>com quem<br>você <em>é</em></h1>
+    <p class="hero-p">Moda feminina e acessórios selecionados com cuidado — elegância e estilo para o seu dia a dia.</p>
+    <div class="btns">
+      <a href="#produtos" class="btn-fill">Ver Coleção →</a>
+      <a href="#categorias" class="btn-line">Explorar</a>
+    </div>
+    <div class="hero-stats">
+      <div><div class="hstat-n">2<sup>k</sup></div><div class="hstat-l">Produtos</div></div>
+      <div><div class="hstat-n">2</div><div class="hstat-l">Categorias</div></div>
+      <div><div class="hstat-n">98<sup>%</sup></div><div class="hstat-l">Satisfação</div></div>
+    </div>
+  </div>
+  <div class="hero-right">
+    <div class="hero-bg">
+      <div class="hero-icon">👗</div>
+      <div class="hero-chip"><small>Destaque da semana</small><strong>Vestido Midi Linho</strong></div>
+    </div>
+  </div>
+</section>
+
+<!-- TICKER -->
+<div class="ticker"><div class="ticker-track" id="ticker"></div></div>
+
+<!-- CATEGORIES -->
+<section class="sec cats-sec" id="categorias">
+  <div class="sh">
+    <div class="sh-left"><p class="label">Explore</p><h2>Compre por<br><em>categoria</em></h2></div>
+    <a href="#" class="sh-link">Ver todas →</a>
+  </div>
+  <div class="cats-grid" id="cats-grid"></div>
+</section>
+
+<!-- PRODUCTS -->
+<section class="sec prod-sec" id="produtos">
+  <div class="sh">
+    <div class="sh-left"><p class="label">Destaques</p><h2>Mais<br><em>procurados</em></h2></div>
+    <a href="#" class="sh-link">Ver todos →</a>
+  </div>
+  <div class="pgrid" id="pgrid"></div>
+</section>
+
+<!-- EDITORIAL -->
+<div class="editorial" id="editorial">
+  <div class="ed-visual"><div class="ed-icon">🌿</div></div>
+  <div class="ed-text">
+    <p class="ed-label">Edição Especial</p>
+    <h2 class="ed-title">A elegância<br>do <em>natural</em></h2>
+    <p class="ed-p">Nossa coleção em tecidos orgânicos certificados. Peças que respeitam o planeta e valorizam quem veste.</p>
+    <div class="btns"><a href="#" class="btn-fill">Descobrir →</a></div>
+  </div>
+</div>
+
+<!-- NEWSLETTER -->
+<div class="nl" id="sobre">
+  <div class="nl-inner">
+    <p class="nl-label">Fique por dentro</p>
+    <h2 class="nl-title">Receba em<br>primeira mão</h2>
+    <p class="nl-p">Novidades, lançamentos e ofertas exclusivas direto no seu e-mail. Sem spam.</p>
+    <div class="nl-form">
+      <input type="email" class="nl-input" placeholder="seu@email.com.br" id="nlInput"/>
+      <button class="nl-btn" onclick="subscribe()">Inscrever</button>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="foot-top">
+    <div>
+      <a href="#" class="foot-logo">Be<em>J</em>o Store</a>
+      <p class="foot-about">Moda feminina e acessórios com estilo. Qualidade, elegância e preço justo, entregues em todo o Brasil.</p>
+      <div class="foot-socials">
+        <button class="fsoc">📸</button><button class="fsoc">📌</button>
+        <button class="fsoc">🎵</button><button class="fsoc">▶</button>
+      </div>
+    </div>
+    <div class="fcol"><p class="fcol-h">Loja</p><ul><li><a href="#">Feminino</a></li><li><a href="#">Acessórios</a></li><li><a href="#">Sale</a></li></ul></div>
+    <div class="fcol"><p class="fcol-h">Ajuda</p><ul><li><a href="#">Meu Pedido</a></li><li><a href="#">Trocas & Dev.</a></li><li><a href="#">Guia de Medidas</a></li><li><a href="#">Frete & Entrega</a></li></ul></div>
+    <div class="fcol"><p class="fcol-h">Empresa</p><ul><li><a href="#">Sobre Nós</a></li><li><a href="#">Blog</a></li><li><a href="#">Privacidade</a></li><li><a href="#">Termos</a></li></ul></div>
+  </div>
+  <div class="foot-bottom">
+    <p>© 2026 BeJo Store. Todos os direitos reservados.</p>
+    <p>🔒 Pagamento seguro · 🚚 Frete grátis acima de R$ <span id="free-ship-val">299</span></p>
+  </div>
+</footer>
+
+<!-- CART -->
+<div class="cart-veil" id="veil" onclick="closeCart()"></div>
+<div class="cart-panel" id="cpanel">
+  <div class="cart-top"><h3>Carrinho</h3><button class="cart-close" onclick="closeCart()">✕</button></div>
+  <div class="cart-body" id="cbody">
+    <div class="cart-empty"><div class="ei">🛍</div><p>Seu carrinho está vazio.</p></div>
+  </div>
+  <div id="cfoot" style="display:none" class="cart-foot">
+    <div id="coupon-section">
+      <div class="coupon-bar">
+        <input type="text" class="coupon-input" id="coupon-input" placeholder="Código de cupom" style="text-transform:uppercase"/>
+        <button class="coupon-btn" onclick="applyCoupon()">Aplicar</button>
+      </div>
+      <div class="coupon-msg" id="coupon-msg"></div>
+    </div>
+    <div class="total-row"><span>Subtotal</span><strong id="csubtotal">R$ 0,00</strong></div>
+    <div class="discount-row" id="cdiscount-row" style="display:none"><span>Desconto (<span id="cdiscount-code"></span>)</span><span id="cdiscount-val"></span></div>
+    <div class="total-row" style="margin-top:6px;padding-top:12px;border-top:1px solid var(--border)"><span>Total</span><strong id="ctotal">R$ 0,00</strong></div>
+    <button class="btn-checkout" onclick="finalizarPedido()">💬 Pedir pelo WhatsApp →</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// Cursor
+const c1=document.getElementById('cur'),c2=document.getElementById('cur2');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY});
+(function loop(){c1.style.left=mx+'px';c1.style.top=my+'px';rx+=(mx-rx)*.12;ry+=(my-ry)*.12;c2.style.left=rx+'px';c2.style.top=ry+'px';requestAnimationFrame(loop)})();
+
+// Ticker
+const tkItems=['Frete grátis acima de R$ 299','Troca em 30 dias sem burocracia','Parcelamento em 12x sem juros','PIX com 5% de desconto','Nova coleção toda semana'];
+const tk=document.getElementById('ticker');let h='';
+for(let i=0;i<4;i++) tkItems.forEach(t=>{h+=`<span class="tk">${t}</span><span class="tk tk-dot">✦</span>`});
+tk.innerHTML=h;
+
+// ── Settings ──
+function getSettings(){return JSON.parse(localStorage.getItem('bejo_settings')||'{"whatsapp":"5549999999999","wamsg":"Olá! Gostaria de fazer um pedido:","storename":"BeJo Store","freeship":299,"reqsize":true,"coupons":true,"oldprice":true}')}
+function getCouponsData(){return JSON.parse(localStorage.getItem('bejo_coupons')||'[]')}
+
+// ── Data ──
+function getAdminProds(){
+  const raw=localStorage.getItem('bejo_prods');
+  if(raw) return JSON.parse(raw);
+  return [
+    {id:'p1',name:'Vestido Midi Linho',desc:'Vestido midi em linho natural, corte reto.',cat:'Feminino',price:389,old:0,tag:'Novo',emoji:'👗',bg:'pi1',sizes:[{s:'P',av:true},{s:'M',av:true},{s:'G',av:true},{s:'GG',av:false}]},
+    {id:'p2',name:'Blazer Oversized',desc:'Blazer oversized com caimento impecável.',cat:'Feminino',price:520,old:780,tag:'Sale',emoji:'🧥',bg:'pi2',sizes:[{s:'P',av:true},{s:'M',av:true},{s:'G',av:false}]},
+    {id:'p3',name:'Saia Midi Plissada',desc:'Saia midi plissada, elegante e versátil.',cat:'Feminino',price:298,old:0,tag:'Novo',emoji:'👗',bg:'pi3',sizes:[{s:'P',av:true},{s:'M',av:true},{s:'G',av:true},{s:'GG',av:true}]},
+    {id:'p4',name:'Blusa Cropped Seda',desc:'Blusa cropped em seda italiana.',cat:'Feminino',price:219,old:319,tag:'Sale',emoji:'👚',bg:'pi4',sizes:[{s:'P',av:false},{s:'M',av:true},{s:'G',av:true},{s:'GG',av:true}]},
+    {id:'p5',name:'Bolsa Estruturada',desc:'Bolsa estruturada em couro sintético.',cat:'Acessórios',price:269,old:0,tag:'Novo',emoji:'👜',bg:'pi7',sizes:[{s:'Único',av:true}]},
+    {id:'p6',name:'Colar Dourado',desc:'Colar dourado delicado, acabamento premium.',cat:'Acessórios',price:129,old:189,tag:'Sale',emoji:'💍',bg:'pi8',sizes:[{s:'Único',av:true}]},
+    {id:'p7',name:'Brinco Argola',desc:'Brinco argola dourado, clássico.',cat:'Acessórios',price:89,old:0,tag:'Novo',emoji:'💛',bg:'pi5',sizes:[{s:'Único',av:true}]},
+    {id:'p8',name:'Lenço Estampado',desc:'Lenço estampado em seda.',cat:'Acessórios',price:149,old:199,tag:'Sale',emoji:'🧣',bg:'pi6',sizes:[{s:'Único',av:true}]},
+  ];
+}
+function getAdminCats(){
+  const raw=localStorage.getItem('bejo_cats');
+  if(raw) return JSON.parse(raw);
+  return [{id:'cat1',name:'Feminino',icon:'👗',color:'cb1'},{id:'cat2',name:'Acessórios',icon:'💍',color:'cb5'}];
+}
+
+function brl(v){return'R$ '+v.toLocaleString('pt-BR')+',00'}
+function tagClass(tag){return tag==='Novo'?'t-new':tag==='Sale'?'t-sale':'t-dest'}
+
+// Selected sizes state per product card
+const selectedSizes={};
+
+function renderStoreProducts(){
+  const prods=getAdminProds();
+  const settings=getSettings();
+  const g=document.getElementById('pgrid');
+  g.innerHTML='';
+  prods.forEach(p=>{
+    const sizes=p.sizes||[];
+    const old=(p.old&&settings.oldprice)?`<span class="price-was">${brl(p.old)}</span>`:'';
+    const tc=tagClass(p.tag);
+
+    // Size badges below price (visible always)
+    const sizeBadges=sizes.length?`<div class="pc-sizes">${sizes.map(sz=>`<span class="sz-tag ${sz.av?'sz-tag-ok':'sz-tag-out'}" title="${sz.av?'Disponível':'Esgotado'}">${sz.s}${!sz.av?' ✗':''}</span>`).join('')}</div>`:'';
+
+    // Size selector inside hover actions
+    const sizeRow=sizes.length?`<div class="size-selector-row" id="sr-${p.id}">${sizes.map(sz=>`<button class="sz-btn ${!sz.av?'sz-out':''}" onclick="selectSize(event,'${p.id}','${sz.s}',${sz.av})" ${!sz.av?'disabled':''}>${sz.s}</button>`).join('')}</div>`:'';
+
+    g.innerHTML+=`
+    <div class="pc">
+      <div class="pc-img">
+        <div class="pc-bg ${p.bg||'pi1'}">${p.emoji}</div>
+        <span class="ptag ${tc}">${p.tag}</span>
+        <div class="pc-actions">
+          ${sizeRow}
+          <button class="btn-ac" id="ac-${p.id}" onclick="addCart('${p.id}')" ${sizes.length&&settings.reqsize?'disabled':''}>Adicionar ao carrinho</button>
+        </div>
+      </div>
+      <p class="pc-name">${p.name}</p>
+      ${sizeBadges}
+      <div class="pc-price"><span class="price-now">${brl(p.price)}</span>${old}</div>
+    </div>`;
+  });
+}
+
+function selectSize(evt,prodId,size,available){
+  if(!available) return;
+  evt.stopPropagation();
+  selectedSizes[prodId]=size;
+  // Update button styles
+  const row=document.getElementById('sr-'+prodId);
+  if(row) row.querySelectorAll('.sz-btn').forEach(b=>{
+    b.classList.toggle('sz-selected',b.textContent.trim()===size);
+  });
+  // Enable add button
+  const btn=document.getElementById('ac-'+prodId);
+  if(btn){btn.disabled=false;btn.textContent='Adicionar ao carrinho';}
+}
+
+function renderStoreCats(){
+  const cats=getAdminCats(),prods=getAdminProds();
+  const grid=document.getElementById('cats-grid');
+  if(!grid||!cats.length) return;
+  grid.style.gridTemplateColumns=cats.length===1?'1fr':'repeat(2,1fr)';
+  grid.innerHTML=cats.map((c,i)=>`
+    <div class="ccat">
+      <div class="ccat-bg ${c.color}" style="height:100%"></div>
+      <div class="ccat-icon" style="font-size:${i===0?'72':'54'}px">${c.icon}</div>
+      <div class="ccat-info"><small>${prods.filter(p=>p.cat===c.name).length} peças</small><h3>${c.name}</h3></div>
+    </div>`).join('');
+}
+
+// Apply settings
+function applySettings(){
+  const s=getSettings();
+  const fs=document.getElementById('free-ship-val');
+  if(fs) fs.textContent=s.freeship||299;
+  // Show/hide coupon section
+  const cs=document.getElementById('coupon-section');
+  if(cs) cs.style.display=s.coupons!==false?'block':'none';
+}
+
+renderStoreProducts();
+renderStoreCats();
+applySettings();
+window.addEventListener('storage',()=>{renderStoreProducts();renderStoreCats();applySettings();});
+
+// ── Cart ──
+let cart=[];
+let appliedCoupon=null;
+
+function addCart(prodId){
+  const settings=getSettings();
+  const prods=getAdminProds();
+  const p=prods.find(x=>x.id===prodId);
+  if(!p) return;
+  const sizes=p.sizes||[];
+  const reqSize=settings.reqsize!==false;
+  const selSize=selectedSizes[prodId];
+
+  if(sizes.length&&reqSize&&!selSize){
+    showToast('⚠ Selecione um tamanho');return;
+  }
+
+  const sizeLabel=selSize||'';
+  const key=prodId+'|'+sizeLabel;
+  const existing=cart.find(x=>x.key===key);
+  if(existing) existing.qty++;
+  else cart.push({key,prodId,name:p.name,price:p.price,emoji:p.emoji,desc:p.desc||'',size:sizeLabel,qty:1});
+  renderCart();openCart();showToast('✓ '+p.name+(sizeLabel?' ('+sizeLabel+')':'')+' adicionado');
+  appliedCoupon=null;renderCart();
+}
+
+function rmCart(key){cart=cart.filter(x=>x.key!==key);appliedCoupon=null;renderCart()}
+
+function calcDiscount(subtotal){
+  if(!appliedCoupon) return 0;
+  const cp=appliedCoupon;
+  if(cp.type==='percent') return Math.round(subtotal*cp.value/100*100)/100;
+  return Math.min(cp.value,subtotal);
+}
+
+function renderCart(){
+  document.getElementById('badge').textContent=cart.reduce((a,b)=>a+b.qty,0);
+  const body=document.getElementById('cbody'),ft=document.getElementById('cfoot');
+  if(!cart.length){body.innerHTML='<div class="cart-empty"><div class="ei">🛍</div><p>Seu carrinho está vazio.</p></div>';ft.style.display='none';return}
+  ft.style.display='block';
+  const subtotal=cart.reduce((a,b)=>a+b.price*b.qty,0);
+  const discount=calcDiscount(subtotal);
+  const total=subtotal-discount;
+  document.getElementById('csubtotal').textContent=brl(subtotal);
+  document.getElementById('ctotal').textContent=brl(total);
+  const dr=document.getElementById('cdiscount-row');
+  if(discount>0){dr.style.display='flex';document.getElementById('cdiscount-code').textContent=appliedCoupon.code;document.getElementById('cdiscount-val').textContent='-'+brl(discount);}
+  else dr.style.display='none';
+  body.innerHTML=cart.map(item=>`
+    <div class="ci">
+      <div class="ci-img">${item.emoji}</div>
+      <div class="ci-info">
+        <p class="ci-name">${item.name}${item.qty>1?' ×'+item.qty:''}</p>
+        ${item.size?`<p class="ci-size">Tamanho: ${item.size}</p>`:''}
+        <p class="ci-price">${brl(item.price*item.qty)}</p>
+      </div>
+      <button class="ci-rm" onclick="rmCart('${item.key}')">✕</button>
+    </div>`).join('');
+}
+
+function applyCoupon(){
+  const code=document.getElementById('coupon-input').value.trim().toUpperCase();
+  const msg=document.getElementById('coupon-msg');
+  if(!code){msg.textContent='Digite um código.';msg.className='coupon-msg coupon-err';return}
+  const coupons=getCouponsData();
+  const cp=coupons.find(c=>c.code===code);
+  if(!cp){msg.textContent='Cupom não encontrado.';msg.className='coupon-msg coupon-err';return}
+  if(cp.expiry&&new Date(cp.expiry)<new Date()){msg.textContent='Cupom expirado.';msg.className='coupon-msg coupon-err';return}
+  if(cp.limit>0&&(cp.uses||0)>=cp.limit){msg.textContent='Cupom atingiu o limite de usos.';msg.className='coupon-msg coupon-err';return}
+  const subtotal=cart.reduce((a,b)=>a+b.price*b.qty,0);
+  if(cp.min>0&&subtotal<cp.min){msg.textContent=`Pedido mínimo de ${brl(cp.min)} para este cupom.`;msg.className='coupon-msg coupon-err';return}
+  appliedCoupon=cp;
+  const disc=cp.type==='percent'?cp.value+'%':'R$ '+cp.value;
+  msg.textContent=`✓ Cupom aplicado! Desconto de ${disc}`;msg.className='coupon-msg coupon-ok';
+  renderCart();
+}
+
+function openCart(){document.getElementById('cpanel').classList.add('on');document.getElementById('veil').classList.add('on')}
+function closeCart(){document.getElementById('cpanel').classList.remove('on');document.getElementById('veil').classList.remove('on')}
+
+function finalizarPedido(){
+  if(!cart.length) return;
+  const settings=getSettings();
+  const waNum=settings.whatsapp||'5549999999999';
+  const intro=settings.wamsg||'Olá! Gostaria de fazer um pedido:';
+  const subtotal=cart.reduce((a,b)=>a+b.price*b.qty,0);
+  const discount=calcDiscount(subtotal);
+  const total=subtotal-discount;
+
+  // Build WhatsApp message
+  let msg=intro+'\n\n';
+  msg+='*📦 ITENS DO PEDIDO:*\n';
+  cart.forEach(item=>{
+    msg+=`• ${item.emoji} *${item.name}*\n`;
+    if(item.size) msg+=`  Tamanho: *${item.size}*\n`;
+    if(item.desc) msg+=`  ${item.desc}\n`;
+    msg+=`  Qtd: ${item.qty} × ${brl(item.price)} = *${brl(item.price*item.qty)}*\n\n`;
+  });
+  if(discount>0){
+    msg+=`🏷️ Cupom *${appliedCoupon.code}*: -${brl(discount)}\n`;
+  }
+  msg+=`💰 *TOTAL: ${brl(total)}*`;
+
+  // Save order to localStorage
+  const orders=JSON.parse(localStorage.getItem('bejo_orders')||'[]');
+  orders.unshift({
+    id:'#'+String(Math.floor(1000+Math.random()*9000)),
+    date:new Date().toLocaleDateString('pt-BR'),
+    dateTs:Date.now(),
+    customer:'Cliente WhatsApp',
+    items:cart.map(i=>({name:i.name,emoji:i.emoji,qty:i.qty,price:i.price,size:i.size})),
+    total,status:'pendente'
+  });
+  localStorage.setItem('bejo_orders',JSON.stringify(orders));
+
+  // Update coupon usage
+  if(appliedCoupon){
+    const coupons=getCouponsData();
+    const ci=coupons.findIndex(c=>c.code===appliedCoupon.code);
+    if(ci>-1){coupons[ci].uses=(coupons[ci].uses||0)+1;localStorage.setItem('bejo_coupons',JSON.stringify(coupons));}
+  }
+
+  // Open WhatsApp
+  const waUrl=`https://wa.me/${waNum}?text=${encodeURIComponent(msg)}`;
+  window.open(waUrl,'_blank');
+
+  // Reset
+  cart=[];appliedCoupon=null;
+  document.getElementById('coupon-input').value='';
+  document.getElementById('coupon-msg').textContent='';
+  renderCart();closeCart();
+  showToast('✓ Redirecionando para o WhatsApp!');
+}
+
+// Toast
+let tid;
+function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('on');clearTimeout(tid);tid=setTimeout(()=>t.classList.remove('on'),3000)}
+
+// Subscribe
+function subscribe(){
+  const v=document.getElementById('nlInput').value;
+  if(v.includes('@')){showToast('✓ Inscrição confirmada!');document.getElementById('nlInput').value=''}
+  else showToast('⚠ Digite um e-mail válido');
+}
+
+// Scroll reveal
+const obs=new IntersectionObserver(e=>{e.forEach(el=>{if(el.isIntersecting){el.target.style.opacity='1';el.target.style.transform='translateY(0)'}})},{threshold:.1});
+document.querySelectorAll('.pc,.ccat,.sh-left').forEach(el=>{
+  el.style.cssText+='opacity:0;transform:translateY(20px);transition:opacity .6s ease,transform .6s ease';
+  obs.observe(el);
+});
+</script>
+</body>
+</html>
